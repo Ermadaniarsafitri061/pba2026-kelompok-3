@@ -43,7 +43,7 @@ Algoritma yang akan digunakan:
 - Naive Bayes
 - atau Decision Tree
 
-📂 Struktur Folder
+## 📂 Struktur Folder
 pba2026-kelompok-3/
 │── README.md
 │── data/
@@ -68,4 +68,4 @@ Dataset:  https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-mo
 
 ✍️ Catatan
 Dataset ini digunakan untuk membangun model klasifikasi berbasis teks (Natural Language Processing / NLP).
-Repository ini akan terus diperbarui pada checkpoint berikutnya.
+
