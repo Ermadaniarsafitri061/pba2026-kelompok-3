@@ -22,3 +22,23 @@ Dataset ini berisi ulasan (review) film dari IMDb yang digunakan untuk analisis 
   - review: teks ulasan film
 - Target:
   - sentiment: label sentimen (positive / negative)
+
+🎯 Tujuan Model
+Tujuan dari project ini adalah untuk melakukan klasifikasi sentimen terhadap review film.
+Model akan digunakan untuk:
+- Mengklasifikasikan apakah sebuah review termasuk positif atau negatif
+Detail:
+- Input: teks review film
+- Output: label sentimen (positive / negative)
+
+⚙️ Rencana Model (Penjabaran Model)
+Model machine learning akan digunakan untuk mempelajari pola dari teks review dan menentukan sentimen.
+Langkah yang direncanakan:
+1. Preprocessing teks (cleaning, tokenization)
+2. Feature extraction (TF-IDF / Bag of Words)
+3. Training model klasifikasi
+
+Algoritma yang akan digunakan:
+- Logistic Regression
+- Naive Bayes
+- atau Decision Tree
