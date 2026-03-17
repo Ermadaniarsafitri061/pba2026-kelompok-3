@@ -44,3 +44,25 @@ Algoritma yang akan digunakan:
 - Logistic Regression
 - Naive Bayes
 - atau Decision Tree
+
+📂 Struktur Folder
+pba2026-kelompok-3/
+│── README.md
+│── data/
+│   └── IMDB Dataset.csv
+│── src/
+
+
+✅ Status Repository
+Repository publik
+Dataset dipilih
+Penjabaran model dibuat
+Siap untuk evaluasi
+
+🔗 Link Penting
+Repository GitHub: https://github.com/Ermadaniarsafitri061/pba2026-kelompok-3.git
+Dataset:  https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews/data
+
+✍️ Catatan
+Dataset ini digunakan untuk membangun model klasifikasi berbasis teks (Natural Language Processing / NLP).
+Repository ini akan terus diperbarui pada checkpoint berikutnya.
