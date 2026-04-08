@@ -5,13 +5,14 @@ Deploy untuk Hugging Face Spaces.
 Model: best_model.pkl (PyCaret Classification)
 """
 
+import warnings
+warnings.filterwarnings("ignore")
+
 import gradio as gr
 import pandas as pd
 from pycaret.classification import load_model, predict_model
 
-print("Loading model...")
 model = load_model("best_model")
-print("Model loaded successfully!")
 
 
 def predict_sentiment(text: str):
