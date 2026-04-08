@@ -66,4 +66,5 @@ Dataset:  https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-mo
 ## ✍️ Catatan
 Dataset ini digunakan untuk membangun model klasifikasi berbasis teks (Natural Language Processing / NLP).
 
+coba update
 update lia
