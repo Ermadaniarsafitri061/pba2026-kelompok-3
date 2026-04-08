@@ -1,0 +1,6 @@
+pycaret
+gradio
+pandas
+numpy
+scikit-learn
+lightgbm
