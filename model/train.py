@@ -65,7 +65,7 @@ def compare_models_3():
 
 
 # ══════════════════════════════════════════════
-# FINALIZE & SAVE
+# FINALISASI DAN SIMPAN MODEL
 # ══════════════════════════════════════════════
 
 def finalize_and_save(model):
