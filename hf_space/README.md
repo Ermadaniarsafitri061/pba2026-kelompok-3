@@ -21,3 +21,6 @@ Model:
 
 Cara penggunaan:
 Masukkan review film pada textbox lalu klik submit untuk melihat hasil prediksi.
+
+Link Huggingface:
+https://huggingface.co/spaces/Ermadaniarsafitri061/imdb-sentiment
