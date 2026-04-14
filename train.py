@@ -1,7 +1,7 @@
 """
 train.py — Training Pipeline IMDB (Clean Dataset)
 ==================================================
-Menggunakan clean_imdb.csv tanpa download & preprocessing ulang.
+Menggunakan clean_imdb.csv tanpa download & preprocess ulang.
 """
 
 import os
