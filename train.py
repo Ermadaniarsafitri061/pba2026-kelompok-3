@@ -1,7 +1,7 @@
 """
 train.py — Training Pipeline IMDB (Clean Dataset)
 ==================================================
-Menggunakan clean_imdb.csv tanpa download & preprocess ulang.
+Menggunakan clean_imdb.csv tanpa preprocessing ulang.
 """
 
 import os
@@ -9,11 +9,12 @@ import warnings
 import pandas as pd
 
 from config import (
-    RAW_CSV,
+    DATA_PATH,
+    TEXT_COL,
     LABEL_COL,
     MODEL_DIR,
-    SESSION_ID,
-    TRAIN_SIZE,
+    RANDOM_STATE,
+    TEST_SIZE,
 )
 
 warnings.filterwarnings("ignore")
@@ -28,25 +29,24 @@ def setup_pycaret(df: pd.DataFrame):
 
     print("Inisialisasi PyCaret...")
 
-    df_model = df[["clean_review", LABEL_COL]].copy()
+    df_model = df[[TEXT_COL, LABEL_COL]].copy()
 
-    s = setup(
+    setup(
         data=df_model,
         target=LABEL_COL,
-        text_features=["clean_review"],
-        session_id=SESSION_ID,
-        train_size=TRAIN_SIZE,
+        text_features=[TEXT_COL],
+        session_id=RANDOM_STATE,   # ✅ FIX
+        train_size=1 - TEST_SIZE,  # ✅ FIX
         verbose=True,
         html=False,
         use_gpu=False,
     )
 
     print("Setup selesai.")
-    return s
 
 
 # ══════════════════════════════════════════════
-# COMPARE 3 MODELS
+# COMPARE MODELS
 # ══════════════════════════════════════════════
 
 def compare_models_3():
@@ -74,7 +74,7 @@ def finalize_and_save(model):
     print("Finalisasi model...")
     final = finalize_model(model)
 
-    save_path = os.path.join(MODEL_DIR, "best_model")
+    save_path = os.path.join(MODEL_DIR, "sentiment_model")
     save_model(final, save_path)
 
     print(f"Model disimpan di: {save_path}.pkl")
@@ -87,7 +87,14 @@ def finalize_and_save(model):
 
 if __name__ == "__main__":
     print("Memuat dataset clean...")
-    df = pd.read_csv(RAW_CSV)
+
+    if not os.path.exists(DATA_PATH):
+        raise FileNotFoundError(f"Dataset tidak ditemukan di: {DATA_PATH}")
+
+    df = pd.read_csv(DATA_PATH)
+
+    print(f"Jumlah data: {len(df)}")
+    print(df.head())
 
     setup_pycaret(df)
 
