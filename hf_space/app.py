@@ -1,45 +1,33 @@
-import warnings
-warnings.filterwarnings("ignore")
-
 import gradio as gr
+import os
 import pandas as pd
 from pycaret.classification import load_model, predict_model
 
-# Load model (tanpa .pkl)
-model = load_model("best_model")
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+MODEL_PATH = os.path.join(BASE_DIR, "models", "sentiment_model")
+
+model = load_model(MODEL_PATH)
 
 
-def predict_sentiment(text):
-    if not text or not text.strip():
-        return {"Empty Input": 1.0}
+def predict(text):
+    df = pd.DataFrame({"clean_review": [text]})
+    pred = predict_model(model, data=df)
 
-    df_input = pd.DataFrame({
-        "clean_review": [text]
-    })
+    result = pred["prediction_label"][0]
 
-    result = predict_model(model, data=df_input)
+    print("DEBUG:", result)
 
-    # Ambil label
-    label = result.get("prediction_label", result.iloc[:, -1])[0]
-
-    # Ambil confidence
-    score = result.get("prediction_score", pd.Series([1.0]))[0]
-
-    return {str(label): float(score)}
+    if result == "positive":
+        return "Positive 😊"
+    else:
+        return "Negative 😡"
 
 
-demo = gr.Interface(
-    fn=predict_sentiment,
-    inputs=gr.Textbox(
-        label="Masukkan Review Film",
-        placeholder="Contoh: This movie was amazing!",
-        lines=3,
-    ),
-    outputs=gr.Label(num_top_classes=2),
-    title="🎬 IMDB Sentiment Analysis",
-    description="Sentiment Analysis menggunakan PyCaret",
-    theme=gr.themes.Soft(),
+iface = gr.Interface(
+    fn=predict,
+    inputs="text",
+    outputs="text",
+    title="IMDB Sentiment Analysis"
 )
 
-if __name__ == "__main__":
-    demo.launch()
+iface.launch()
