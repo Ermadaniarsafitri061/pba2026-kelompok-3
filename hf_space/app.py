@@ -6,7 +6,7 @@ from pycaret.classification import load_model, predict_model
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "models", "sentiment_model")
 
-model = load_model(MODEL_PATH)
+model = load_model("models/sentiment_model")
 
 
 def predict(text):
