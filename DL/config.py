@@ -1,11 +1,11 @@
 """
-config.py — Konfigurasi & Konstanta untuk IMDB Sentiment Analysis
-================================================================
-Digunakan untuk klasifikasi sentimen (2 kelas: Positive / Negative)
+config.py — Konfigurasi Project IMDB Sentiment Analysis
+======================================================
+Berisi path, parameter preprocessing, dan hyperparameter
+untuk model Deep Learning (BiLSTM & DistilBERT).
 """
 
 import os
-import torch
 
 # ──────────────────────────────────────────────
 # 📁 PATH
@@ -15,8 +15,8 @@ DATA_DIR  = os.path.join(BASE_DIR, "data")
 MODEL_DIR = os.path.join(BASE_DIR, "models")
 PLOT_DIR  = os.path.join(BASE_DIR, "plots")
 
-# 🔥 SESUAIKAN DENGAN FILE DATASET KAMU
-RAW_CSV = os.path.join(DATA_DIR, "clean_imdb.csv")
+RAW_DATA_PATH   = os.path.join(DATA_DIR, "IMDB Dataset.csv")
+CLEAN_DATA_PATH = os.path.join(DATA_DIR, "clean_imdb_10k.csv")
 
 # Buat folder kalau belum ada
 os.makedirs(DATA_DIR,  exist_ok=True)
@@ -24,41 +24,28 @@ os.makedirs(MODEL_DIR, exist_ok=True)
 os.makedirs(PLOT_DIR,  exist_ok=True)
 
 # ──────────────────────────────────────────────
-# 📋 DATASET (IMDB)
+# 📋 DATASET
 # ──────────────────────────────────────────────
-TEXT_COL  = "review"      # ganti kalau nama kolom beda
-LABEL_COL = "sentiment"   # ganti kalau nama kolom beda
+TEXT_COL        = "review"
+CLEAN_TEXT_COL  = "clean_review"
+LABEL_COL       = "sentiment"
 
-# Label untuk sentiment analysis
-LABEL_LIST = ["Negative", "Positive"]
-NUM_CLASSES = len(LABEL_LIST)
-
-# Mapping label (optional tapi bagus)
-label2id = {
-    "Negative": 0,
-    "Positive": 1
+LABEL_MAPPING = {
+    "negative": 0,
+    "positive": 1
 }
 
-id2label = {
-    0: "Negative",
-    1: "Positive"
-}
+NUM_CLASSES = len(LABEL_MAPPING)
 
 # ──────────────────────────────────────────────
-# ⚙️  UMUM
+# ⚙️ UMUM
 # ──────────────────────────────────────────────
 RANDOM_SEED = 42
-
-# Gunakan None untuk pakai semua data
-SAMPLE_SIZE = None  
-
-TEST_SIZE   = 0.10
-VAL_SIZE    = 0.10
-
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+TEST_SIZE   = 0.2
+VAL_SIZE    = 0.1
 
 # ──────────────────────────────────────────────
-# 🧠 HYPERPARAMETER — LSTM (OPTIONAL)
+# 🧠 HYPERPARAMETER — BiLSTM
 # ──────────────────────────────────────────────
 VOCAB_SIZE  = 20_000
 EMBED_DIM   = 128
@@ -67,13 +54,13 @@ NUM_LAYERS  = 2
 DROPOUT     = 0.3
 MAX_LEN     = 128
 
-LSTM_EPOCHS     = 5
+LSTM_EPOCHS     = 10
 LSTM_BATCH_SIZE = 64
 LSTM_LR         = 1e-3
-LSTM_PATIENCE   = 2
+LSTM_PATIENCE   = 3
 
 # ──────────────────────────────────────────────
-# 🤗 HYPERPARAMETER — DistilBERT (RECOMMENDED)
+# 🤗 HYPERPARAMETER — DistilBERT
 # ──────────────────────────────────────────────
 BERT_MODEL      = "distilbert-base-uncased"
 BERT_MAX_LEN    = 128
@@ -83,15 +70,11 @@ BERT_LR         = 2e-5
 BERT_PATIENCE   = 2
 
 # ──────────────────────────────────────────────
-# 💾 PATH MODEL
+# 💾 MODEL PATH
 # ──────────────────────────────────────────────
-DISTILBERT_MODEL_DIR  = os.path.join(MODEL_DIR, "distilbert")
-DISTILBERT_MODEL_PATH = os.path.join(DISTILBERT_MODEL_DIR, "distilbert.pt")
-
-# Optional (kalau pakai LSTM)
 BILSTM_MODEL_PATH     = os.path.join(MODEL_DIR, "bilstm.pt")
 BILSTM_ATT_MODEL_PATH = os.path.join(MODEL_DIR, "bilstm_attention.pt")
+DISTILBERT_MODEL_DIR  = os.path.join(MODEL_DIR, "distilbert")
 
-# Optional tambahan
 VOCAB_PATH         = os.path.join(MODEL_DIR, "vocab.json")
 LABEL_ENCODER_PATH = os.path.join(MODEL_DIR, "label_encoder.json")
