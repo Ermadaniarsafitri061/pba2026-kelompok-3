@@ -44,6 +44,10 @@ RANDOM_SEED = 42
 TEST_SIZE   = 0.2
 VAL_SIZE    = 0.1
 
+import torch
+
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
 # ──────────────────────────────────────────────
 # 🧠 HYPERPARAMETER — BiLSTM
 # ──────────────────────────────────────────────
