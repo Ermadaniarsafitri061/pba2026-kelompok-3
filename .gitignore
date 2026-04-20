@@ -5,8 +5,11 @@ __pycache__/
 !models/sentiment_model.pkl
 
 # dataset besar
-data/
-DL/data/
+data/*
+DL/Data/*
+
+# IZINKAN dataset kecil
+!data/clean_imdb.csv
 
 # model hasil training
 models/

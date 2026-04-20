@@ -11,7 +11,7 @@ import os
 # 📁 PATH
 # ──────────────────────────────────────────────
 BASE_DIR  = os.path.dirname(os.path.abspath(__file__))
-DATA_DIR  = os.path.join(BASE_DIR, "data")
+DATA_DIR  = os.path.join(BASE_DIR, "Data")
 MODEL_DIR = os.path.join(BASE_DIR, "models")
 PLOT_DIR  = os.path.join(BASE_DIR, "plots")
 
