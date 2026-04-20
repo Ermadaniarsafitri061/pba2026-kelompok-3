@@ -14,7 +14,7 @@ MODEL_DIR = os.path.join(BASE_DIR, "models")
 # DATASET 
 DATA_PATH = os.path.join(DATA_DIR, "clean_imdb.csv")
 
-# pastikan folder model ada
+# pastikan folder model tersedia
 os.makedirs(MODEL_DIR, exist_ok=True)
 
 # KOLOM DATASET
