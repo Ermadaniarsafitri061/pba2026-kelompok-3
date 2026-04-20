@@ -3,4 +3,16 @@ __pycache__/
 *.pyc
 *.pkl
 !models/sentiment_model.pkl
+
+# dataset besar
+data/
+DL/data/
+
+# model hasil training
+models/
+*.pt
+*.bin
+*.pkl
+
+# logs
 logs.log
