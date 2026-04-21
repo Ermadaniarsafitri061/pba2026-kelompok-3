@@ -1,11 +1,12 @@
 """
 config.py — Konfigurasi Project IMDB Sentiment Analysis
 ======================================================
-Berisi path, parameter preprocessing, dan hyperparameter
-untuk model Deep Learning (BiLSTM & DistilBERT).
+Berisi path, hyperparameter model, dan informasi dataset
+(IMDB dari Kaggle, diambil 10.000 sample).
 """
 
 import os
+import torch
 
 # ──────────────────────────────────────────────
 # 📁 PATH
@@ -26,25 +27,35 @@ os.makedirs(PLOT_DIR,  exist_ok=True)
 # ──────────────────────────────────────────────
 # 📋 DATASET
 # ──────────────────────────────────────────────
-TEXT_COL        = "review"
-CLEAN_TEXT_COL  = "clean_review"
-LABEL_COL       = "sentiment"
+# Dataset: IMDB Movie Reviews (50K)
+# Sumber: https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews
+# Digunakan: 10.000 sample (stratified)
+
+KAGGLE_DATASET    = "lakshmi25npathi/imdb-dataset-of-50k-movie-reviews"
+EXPECTED_FILENAME = "IMDB Dataset.csv"
+
+TEXT_COL       = "review"
+CLEAN_TEXT_COL = "clean_review"
+LABEL_COL      = "sentiment"
 
 LABEL_MAPPING = {
     "negative": 0,
     "positive": 1
 }
 
+LABEL_LIST = ["negative", "positive"]
 NUM_CLASSES = len(LABEL_MAPPING)
 
 # ──────────────────────────────────────────────
 # ⚙️ UMUM
 # ──────────────────────────────────────────────
 RANDOM_SEED = 42
-TEST_SIZE   = 0.2
-VAL_SIZE    = 0.1
 
-import torch
+# jumlah data yang diambil dari raw dataset
+SAMPLE_SIZE = 10_000
+
+TEST_SIZE = 0.2
+VAL_SIZE  = 0.1
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
