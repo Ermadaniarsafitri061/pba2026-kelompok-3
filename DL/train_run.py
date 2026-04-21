@@ -1,15 +1,14 @@
 import os
 import torch
+import pandas as pd
 from transformers import DistilBertTokenizerFast
 
 from config import *
-from preprocess import preprocess   
 from dataset import Vocabulary, get_lstm_dataloaders, get_bert_dataloaders
 from models import (
     BiLSTMClassifier,
     BiLSTMAttentionClassifier,
     DistilBERTClassifier,
-    count_parameters,
 )
 from train import (
     set_seed,
@@ -28,33 +27,44 @@ def main():
     print("Device:", DEVICE)
 
     # =========================
-    # PREPROCESS DATA
+    # LOAD CLEAN DATA (FIXED)
     # =========================
-    print("\nRunning preprocessing...")
-    df = preprocess()   
+    print("\nLoading clean dataset...")
+
+    if not os.path.exists(CLEAN_DATA_PATH):
+        raise FileNotFoundError(
+            f"❌ File tidak ditemukan: {CLEAN_DATA_PATH}\n"
+            f"Pastikan clean_imdb_10k.csv ada di folder Data/"
+        )
+
+    df = pd.read_csv(CLEAN_DATA_PATH)
+
+    # pastikan label_encoded ada
+    if "label_encoded" not in df.columns:
+        df["label_encoded"] = df[LABEL_COL].map(LABEL_MAPPING)
+
+    print(f"✅ Data loaded: {len(df)} samples")
 
     # =========================
     # BUILD VOCAB
     # =========================
     print("\nBuilding vocabulary...")
     vocab = Vocabulary()
-    vocab.build_vocab(df["clean_review"].tolist(), max_size=VOCAB_SIZE)
+    vocab.build_vocab(df[CLEAN_TEXT_COL].tolist(), max_size=VOCAB_SIZE)
 
     # =========================
     # DATALOADER LSTM
     # =========================
     train_loader, val_loader, test_loader = get_lstm_dataloaders(
         df,
-        vocab,
-        max_len=MAX_LEN,
-        batch_size=LSTM_BATCH_SIZE
+        vocab
     )
 
     # =========================
     # TRAIN BILSTM
     # =========================
     print("\nTraining BiLSTM...")
-    model_lstm = BiLSTMClassifier(vocab_size=len(vocab))
+    model_lstm = BiLSTMClassifier(vocab_size=len(vocab.word2idx))
 
     train_model(
         model_lstm,
@@ -71,7 +81,7 @@ def main():
     # TRAIN BILSTM ATTENTION
     # =========================
     print("\nTraining BiLSTM + Attention...")
-    model_att = BiLSTMAttentionClassifier(vocab_size=len(vocab))
+    model_att = BiLSTMAttentionClassifier(vocab_size=len(vocab.word2idx))
 
     train_model(
         model_att,
@@ -92,9 +102,7 @@ def main():
 
     train_bert, val_bert, test_bert = get_bert_dataloaders(
         df,
-        tokenizer,
-        max_len=BERT_MAX_LEN,
-        batch_size=BERT_BATCH_SIZE
+        tokenizer
     )
 
     # =========================

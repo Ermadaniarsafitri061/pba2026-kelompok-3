@@ -5,6 +5,7 @@ Membersihkan teks review dan encode label (binary),
 dengan sampling 10.000 data (stratified).
 """
 
+import os
 import re
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -39,6 +40,15 @@ def clean_text(text):
 # ──────────────────────────────────────────────
 def preprocess():
     print("📥 Load dataset...")
+    # 🔥 DEBUG PATH
+    print("PATH RAW:", RAW_DATA_PATH)
+    print("EXIST:", os.path.exists(RAW_DATA_PATH))
+
+    if not os.path.exists(RAW_DATA_PATH):
+        raise FileNotFoundError(
+            f"❌ RAW dataset tidak ditemukan di:\n{RAW_DATA_PATH}"
+        )
+
     df = pd.read_csv(RAW_DATA_PATH)
 
     df = df[[TEXT_COL, LABEL_COL]].copy()
@@ -46,10 +56,16 @@ def preprocess():
 
     print(f"📊 Jumlah data awal: {len(df):,}")
 
+    # 🔥 WAJIB: pastikan raw = 50k
+    if len(df) < 10000:
+        raise ValueError(
+            f"❌ Data terlalu sedikit ({len(df)}). Pastikan pakai RAW dataset (50K)."
+        )
+
     # ── 🔥 SAMPLING 10K (STRATIFIED) ──
     df, _ = train_test_split(
         df,
-        train_size=10000,
+        train_size=min(10000, len(df)),
         stratify=df[LABEL_COL],
         random_state=42
     )
