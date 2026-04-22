@@ -1,14 +1,13 @@
-import os
 import torch
-import pandas as pd
-from transformers import DistilBertTokenizerFast
+import config
+print(config.__file__)
 
 from config import *
-from dataset import Vocabulary, get_lstm_dataloaders, get_bert_dataloaders
+from preprocess import preprocess
+from dataset import Vocabulary, get_lstm_dataloaders
 from models import (
     BiLSTMClassifier,
     BiLSTMAttentionClassifier,
-    DistilBERTClassifier,
 )
 from train import (
     set_seed,
@@ -27,43 +26,37 @@ def main():
     print("Device:", DEVICE)
 
     # =========================
-    # LOAD CLEAN DATA (FIXED)
+    # PREPROCESS
     # =========================
-    print("\nLoading clean dataset...")
-
-    if not os.path.exists(CLEAN_DATA_PATH):
-        raise FileNotFoundError(
-            f"❌ File tidak ditemukan: {CLEAN_DATA_PATH}\n"
-        )
-
-    df = pd.read_csv(CLEAN_DATA_PATH)
-
-    # pastikan label_encoded ada
-    if "label_encoded" not in df.columns:
-        df["label_encoded"] = df[LABEL_COL].map(LABEL_MAPPING)
+    print("\nLoading & preprocessing...")
+    df = preprocess()
 
     print(f"✅ Data loaded: {len(df)} samples")
 
     # =========================
-    # BUILD VOCAB
+    # VOCAB
     # =========================
     print("\nBuilding vocabulary...")
     vocab = Vocabulary()
-    vocab.build_vocab(df[CLEAN_TEXT_COL].tolist(), max_size=VOCAB_SIZE)
+    vocab.build_vocab(df["clean_review"].tolist(), max_size=VOCAB_SIZE)
+
+    print(f"📚 Vocabulary size: {len(vocab)}")
 
     # =========================
-    # DATALOADER LSTM
+    # DATALOADER
     # =========================
     train_loader, val_loader, test_loader = get_lstm_dataloaders(
         df,
-        vocab
+        vocab,
+        max_len=MAX_LEN,
+        batch_size=LSTM_BATCH_SIZE
     )
 
     # =========================
-    # TRAIN BILSTM
+    # TRAIN BiLSTM
     # =========================
-    print("\nTraining BiLSTM...")
-    model_lstm = BiLSTMClassifier(vocab_size=len(vocab.word2idx))
+    print("\n🚀 Training BiLSTM...")
+    model_lstm = BiLSTMClassifier(vocab_size=len(vocab))
 
     train_model(
         model_lstm,
@@ -77,10 +70,10 @@ def main():
     )
 
     # =========================
-    # TRAIN BILSTM ATTENTION
+    # TRAIN BiLSTM ATTENTION
     # =========================
-    print("\nTraining BiLSTM + Attention...")
-    model_att = BiLSTMAttentionClassifier(vocab_size=len(vocab.word2idx))
+    print("\n🚀 Training BiLSTM + Attention...")
+    model_att = BiLSTMAttentionClassifier(vocab_size=len(vocab))
 
     train_model(
         model_att,
@@ -94,52 +87,19 @@ def main():
     )
 
     # =========================
-    # DATALOADER BERT
-    # =========================
-    print("\nPreparing BERT...")
-    tokenizer = DistilBertTokenizerFast.from_pretrained(BERT_MODEL)
-
-    train_bert, val_bert, test_bert = get_bert_dataloaders(
-        df,
-        tokenizer
-    )
-
-    # =========================
-    # TRAIN DISTILBERT
-    # =========================
-    print("\nTraining DistilBERT...")
-    model_bert = DistilBERTClassifier()
-
-    train_model(
-        model_bert,
-        train_bert,
-        val_bert,
-        model_type="bert",
-        save_path=os.path.join(DISTILBERT_MODEL_DIR, "model.pt"),
-        epochs=BERT_EPOCHS,
-        lr=BERT_LR,
-        patience=BERT_PATIENCE,
-    )
-
-    # =========================
     # EVALUATION
     # =========================
-    print("\nEvaluating...")
+    print("\n📊 Evaluating...")
 
     criterion = torch.nn.CrossEntropyLoss()
 
     _, _, preds, labels = evaluate(model_lstm, test_loader, criterion)
-    print("\nBiLSTM:")
+    print("\n📌 BiLSTM:")
     print_report(labels, preds)
     plot_confusion(labels, preds)
 
     _, _, preds, labels = evaluate(model_att, test_loader, criterion)
-    print("\nBiLSTM + Attention:")
-    print_report(labels, preds)
-    plot_confusion(labels, preds)
-
-    _, _, preds, labels = evaluate(model_bert, test_bert, criterion, True)
-    print("\nDistilBERT:")
+    print("\n📌 BiLSTM + Attention:")
     print_report(labels, preds)
     plot_confusion(labels, preds)
 

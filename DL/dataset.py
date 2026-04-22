@@ -13,8 +13,8 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 
 from config import (
-    VOCAB_SIZE, MAX_LEN, BERT_MAX_LEN,
-    LSTM_BATCH_SIZE, BERT_BATCH_SIZE,
+    VOCAB_SIZE, MAX_LEN,
+    LSTM_BATCH_SIZE,
     TEST_SIZE, VAL_SIZE, RANDOM_SEED,
     VOCAB_PATH,
     CLEAN_DATA_PATH   # 
@@ -89,36 +89,6 @@ class IMDBDataset(Dataset):
             torch.tensor(length, dtype=torch.long),
         )
 
-
-# ──────────────────────────────────────────────
-# 📦 DATASET BERT
-# ──────────────────────────────────────────────
-class BERTDataset(Dataset):
-    def __init__(self, texts, labels, tokenizer, max_len=BERT_MAX_LEN):
-        self.texts = texts
-        self.labels = labels
-        self.tokenizer = tokenizer
-        self.max_len = max_len
-
-    def __len__(self):
-        return len(self.texts)
-
-    def __getitem__(self, idx):
-        encoding = self.tokenizer(
-            self.texts[idx],
-            max_length=self.max_len,
-            padding="max_length",
-            truncation=True,
-            return_tensors="pt",
-        )
-
-        return {
-            "input_ids": encoding["input_ids"].squeeze(0),
-            "attention_mask": encoding["attention_mask"].squeeze(0),
-            "label": torch.tensor(self.labels[idx], dtype=torch.long),
-        }
-
-
 # ──────────────────────────────────────────────
 # 🔄 DATALOADER LSTM
 # ──────────────────────────────────────────────
@@ -153,43 +123,6 @@ def get_lstm_dataloaders(df, vocab):
     print(f"📦 Train: {len(train_ds)} | Val: {len(val_ds)} | Test: {len(test_ds)}")
 
     return train_loader, val_loader, test_loader
-
-
-# ──────────────────────────────────────────────
-# 🔄 DATALOADER BERT
-# ──────────────────────────────────────────────
-def get_bert_dataloaders(df, tokenizer):
-
-    texts = df["clean_review"].tolist()
-    labels = df["label_encoded"].tolist()
-
-    train_texts, temp_texts, train_labels, temp_labels = train_test_split(
-        texts, labels,
-        test_size=(TEST_SIZE + VAL_SIZE),
-        stratify=labels,
-        random_state=RANDOM_SEED,
-    )
-
-    relative_val = VAL_SIZE / (TEST_SIZE + VAL_SIZE)
-    val_texts, test_texts, val_labels, test_labels = train_test_split(
-        temp_texts, temp_labels,
-        test_size=(1 - relative_val),
-        stratify=temp_labels,
-        random_state=RANDOM_SEED,
-    )
-
-    train_ds = BERTDataset(train_texts, train_labels, tokenizer)
-    val_ds   = BERTDataset(val_texts, val_labels, tokenizer)
-    test_ds  = BERTDataset(test_texts, test_labels, tokenizer)
-
-    train_loader = DataLoader(train_ds, batch_size=BERT_BATCH_SIZE, shuffle=True)
-    val_loader   = DataLoader(val_ds, batch_size=BERT_BATCH_SIZE)
-    test_loader  = DataLoader(test_ds, batch_size=BERT_BATCH_SIZE)
-
-    print(f"📦 Train: {len(train_ds)} | Val: {len(val_ds)} | Test: {len(test_ds)}")
-
-    return train_loader, val_loader, test_loader
-
 
 # ──────────────────────────────────────────────
 # 🚀 TEST CEPAT

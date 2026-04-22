@@ -8,7 +8,7 @@ import torch.nn.functional as F
 
 from config import (
     VOCAB_SIZE, EMBED_DIM, HIDDEN_DIM, NUM_LAYERS, DROPOUT,
-    NUM_CLASSES, BERT_MODEL,
+    NUM_CLASSES,
 )
 
 # =========================================================
@@ -115,37 +115,6 @@ class BiLSTMAttentionClassifier(nn.Module):
         logits = self.fc(out)
 
         return logits, attention_weights
-
-
-# =========================================================
-# MODEL 3: DistilBERT (RECOMMENDED)
-# =========================================================
-class DistilBERTClassifier(nn.Module):
-    def __init__(
-        self,
-        bert_model=BERT_MODEL,
-        num_classes=NUM_CLASSES,
-        dropout=DROPOUT,
-    ):
-        super().__init__()
-
-        from transformers import DistilBertModel
-
-        self.bert = DistilBertModel.from_pretrained(bert_model)
-        self.dropout = nn.Dropout(dropout)
-        self.fc = nn.Linear(self.bert.config.hidden_size, num_classes)
-
-    def forward(self, input_ids, attention_mask):
-        outputs = self.bert(input_ids=input_ids, attention_mask=attention_mask)
-
-        # ambil CLS token
-        cls_output = outputs.last_hidden_state[:, 0, :]
-
-        out = self.dropout(cls_output)
-        logits = self.fc(out)
-
-        return logits
-
 
 # =========================================================
 # HELPER
