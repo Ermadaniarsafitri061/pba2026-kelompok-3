@@ -18,7 +18,7 @@ from sklearn.metrics import (
 
 from config import (
     DEVICE, NUM_CLASSES,
-    LSTM_LR, LSTM_PATIENCE, BERT_LR, BERT_PATIENCE,
+    LSTM_LR, LSTM_PATIENCE,
     PLOT_DIR,
 )
 
@@ -75,34 +75,6 @@ def train_one_epoch_lstm(model, dataloader, optimizer, criterion):
         total += labels.size(0)
 
     return total_loss / total, correct / total
-
-
-# =========================
-# TRAIN BERT
-# =========================
-def train_one_epoch_bert(model, dataloader, optimizer, criterion):
-    model.train()
-    total_loss, correct, total = 0, 0, 0
-
-    for batch in dataloader:
-        input_ids = batch["input_ids"].to(DEVICE)
-        attention_mask = batch["attention_mask"].to(DEVICE)
-        labels = batch["label"].to(DEVICE)
-
-        optimizer.zero_grad()
-        logits = model(input_ids, attention_mask)
-
-        loss = criterion(logits, labels)
-        loss.backward()
-        optimizer.step()
-
-        total_loss += loss.item() * labels.size(0)
-        preds = logits.argmax(dim=1)
-        correct += (preds == labels).sum().item()
-        total += labels.size(0)
-
-    return total_loss / total, correct / total
-
 
 # =========================
 # EVALUATE
@@ -169,8 +141,6 @@ def train_model(
 
     for epoch in range(epochs):
         train_loss, train_acc = (
-            train_one_epoch_bert(model, train_loader, optimizer, criterion)
-            if is_bert else
             train_one_epoch_lstm(model, train_loader, optimizer, criterion)
         )
 

@@ -39,6 +39,9 @@ class Vocabulary:
             self.PAD_IDX: self.PAD_TOKEN,
             self.UNK_IDX: self.UNK_TOKEN,
         }
+    
+    def __len__(self):
+        return len(self.word2idx)
 
     def build_vocab(self, texts, max_size=VOCAB_SIZE):
         counter = Counter()

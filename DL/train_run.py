@@ -46,10 +46,8 @@ def main():
     # DATALOADER
     # =========================
     train_loader, val_loader, test_loader = get_lstm_dataloaders(
-        df,
-        vocab,
-        max_len=MAX_LEN,
-        batch_size=LSTM_BATCH_SIZE
+    df,
+    vocab
     )
 
     # =========================
