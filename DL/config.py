@@ -6,7 +6,6 @@ Berisi path, hyperparameter model, dan informasi dataset
 """
 
 import os
-import torch
 
 # ──────────────────────────────────────────────
 # 📁 PATH
@@ -20,7 +19,7 @@ RAW_DATA_PATH = os.path.join(
     DATA_DIR,
     "imdb-dataset-of-50k-movie-reviews",
     "IMDB Dataset.csv")
-CLEAN_DATA_PATH = os.path.join(DATA_DIR, "IMDB Dataset.csv")
+CLEAN_DATA_PATH = os.path.join(DATA_DIR, "clean_imdb_10k.csv")
 
 # Buat folder kalau belum ada
 os.makedirs(DATA_DIR,  exist_ok=True)
@@ -55,25 +54,25 @@ NUM_CLASSES = len(LABEL_MAPPING)
 RANDOM_SEED = 42
 
 # jumlah data yang diambil dari raw dataset
-SAMPLE_SIZE = 10_000
+SAMPLE_SIZE = 3000
 
 TEST_SIZE = 0.2
 VAL_SIZE  = 0.1
 
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+DEVICE = "cpu"
 
 # ──────────────────────────────────────────────
 # 🧠 HYPERPARAMETER — BiLSTM
 # ──────────────────────────────────────────────
-VOCAB_SIZE  = 20_000
-EMBED_DIM   = 128
-HIDDEN_DIM  = 256
-NUM_LAYERS  = 2
+VOCAB_SIZE  = 5000
+EMBED_DIM   = 64
+HIDDEN_DIM  = 64
+NUM_LAYERS  = 1
 DROPOUT     = 0.3
-MAX_LEN     = 128
+MAX_LEN     = 80
 
-LSTM_EPOCHS     = 10
-LSTM_BATCH_SIZE = 64
+LSTM_EPOCHS     = 1
+LSTM_BATCH_SIZE = 128
 LSTM_LR         = 1e-3
 LSTM_PATIENCE   = 3
 
