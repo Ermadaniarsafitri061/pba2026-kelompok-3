@@ -34,7 +34,6 @@ def main():
     if not os.path.exists(CLEAN_DATA_PATH):
         raise FileNotFoundError(
             f"❌ File tidak ditemukan: {CLEAN_DATA_PATH}\n"
-            f"Pastikan clean_imdb_10k.csv ada di folder Data/"
         )
 
     df = pd.read_csv(CLEAN_DATA_PATH)

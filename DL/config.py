@@ -16,7 +16,11 @@ DATA_DIR  = os.path.join(BASE_DIR, "Data")
 MODEL_DIR = os.path.join(BASE_DIR, "models")
 PLOT_DIR  = os.path.join(BASE_DIR, "plots")
 
-RAW_DATA_PATH = os.path.join(DATA_DIR, "IMDB Dataset.csv")
+RAW_DATA_PATH = os.path.join(
+    DATA_DIR,
+    "imdb-dataset-of-50k-movie-reviews",
+    "IMDB Dataset.csv")
+CLEAN_DATA_PATH = os.path.join(DATA_DIR, "IMDB Dataset.csv")
 
 # Buat folder kalau belum ada
 os.makedirs(DATA_DIR,  exist_ok=True)
