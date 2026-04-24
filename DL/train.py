@@ -146,7 +146,7 @@ def train_model(
                 print("⛔ Early stopping!")
                 break
 
-    # =========================
+        # =========================
     # TEST
     # =========================
     print(f"\n📊 Evaluasi {model_name}...")
@@ -206,4 +206,16 @@ def train_model(
 
     print(f"📊 Saved: {curve_path}")
 
-    return history
+    # =========================
+    # METRICS UNTUK COMPARISON
+    # =========================
+    f1_macro = f1_score(y_true, y_pred, average="macro")
+    f1_weighted = f1_score(y_true, y_pred, average="weighted")
+
+    metrics = {
+        "accuracy": test_acc,
+        "f1_macro": f1_macro,
+        "f1_weighted": f1_weighted
+    }
+
+    return metrics

@@ -87,7 +87,7 @@ DROPOUT     = 0.3
 MAX_LEN     = 80
 
 
-LSTM_EPOCHS     = 2
+LSTM_EPOCHS     = 3
 LSTM_BATCH_SIZE = 128
 LSTM_LR         = 1e-3
 LSTM_PATIENCE   = 3
