@@ -21,7 +21,7 @@ warnings.filterwarnings("ignore")
 
 
 # ══════════════════════════════════════════════
-# SETUP PYCARET
+#  INI SETUP PYCARET
 # ══════════════════════════════════════════════
 
 def setup_pycaret(df: pd.DataFrame):
