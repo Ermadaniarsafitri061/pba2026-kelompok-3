@@ -42,7 +42,6 @@ def plot_model_comparison(results):
     plt.title("Komparasi Model Deep Learning")
     plt.legend()
 
-    # angka di atas bar
     for i in range(len(models)):
         plt.text(x[i] - width, acc[i], f"{acc[i]:.3f}", ha='center')
         plt.text(x[i], f1_macro[i], f"{f1_macro[i]:.3f}", ha='center')
@@ -56,6 +55,41 @@ def plot_model_comparison(results):
     plt.close()
 
     print(f"📊 Saved: {path}")
+
+
+# =========================
+# 🔥 SAVE UNTUK VISUALISASI (DL)
+# =========================
+def save_dl_predictions(model, test_loader):
+    print("\n💾 Menyimpan hasil DL untuk visualisasi...")
+
+    model.eval()
+
+    all_preds = []
+    all_labels = []
+
+    with torch.no_grad():
+        for inputs, labels in test_loader:
+            inputs = inputs.to(DEVICE)
+
+            outputs = model(inputs)
+
+            # binary classification → pakai sigmoid
+            probs = torch.sigmoid(outputs).squeeze()
+
+            all_preds.extend(probs.cpu().numpy())
+            all_labels.extend(labels.numpy())
+
+    y_proba = np.array(all_preds)
+    y_test = np.array(all_labels)
+
+    # pastikan folder results ada
+    os.makedirs("../results", exist_ok=True)
+
+    np.save("../results/y_test.npy", y_test)
+    np.save("../results/y_proba.npy", y_proba)
+
+    print("✅ DL: y_test & y_proba berhasil disimpan!")
 
 
 # =========================
@@ -93,7 +127,7 @@ def main():
     # TRAIN BiLSTM
     # =========================
     print("\n🚀 Training BiLSTM...")
-    model_lstm = BiLSTMClassifier(vocab_size=len(vocab))
+    model_lstm = BiLSTMClassifier(vocab_size=len(vocab)).to(DEVICE)
 
     metrics_lstm = train_model(
         model_lstm,
@@ -111,7 +145,7 @@ def main():
     # TRAIN BiLSTM ATTENTION
     # =========================
     print("\n🚀 Training BiLSTM + Attention...")
-    model_att = BiLSTMAttentionClassifier(vocab_size=len(vocab))
+    model_att = BiLSTMAttentionClassifier(vocab_size=len(vocab)).to(DEVICE)
 
     metrics_att = train_model(
         model_att,
@@ -136,6 +170,14 @@ def main():
     }
 
     plot_model_comparison(results)
+
+    # =========================
+    # 🔥 SAVE PREDICTION UNTUK VISUALISASI
+    # =========================
+    print("\n💾 Saving predictions for visualization...")
+
+    # pakai model terbaik (BiLSTM+Attention)
+    save_dl_predictions(model_att, test_loader)
 
     print("\n✅ DONE!")
 
