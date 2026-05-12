@@ -63,6 +63,9 @@ Repository GitHub: https://github.com/Ermadaniarsafitri061/pba2026-kelompok-3.gi
 
 Dataset:  https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews/data
 
+Laporan Arxiv:
+https://arxiv.org/abs/2605.07811
+
 ## ✍️ Catatan
 Dataset ini digunakan untuk membangun model klasifikasi berbasis teks (Natural Language Processing / NLP).
 
